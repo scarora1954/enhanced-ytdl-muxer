@@ -75,7 +75,7 @@ def run_segmentation(input_file, seg_len, seg_num, overlap, start_off, end_off, 
     base = filename if filename else "opal_edit"
 
     # Path setup for Hugging Face Spaces
-    base_path = os.path.join(os.getcwd(), "Manual_Segments")
+    base_path = "/content/drive/MyDrive/Opal_Manual_Segments" # Modified by Colab notebook
     os.makedirs(base_path, exist_ok=True)
 
     final_dir = os.path.join(base_path, date_folder)
@@ -131,7 +131,7 @@ def opal_smart_engine(url, base_folder, filename, live_from_start, time_params, 
     now = datetime.now(ist)
     date_f, time_s = now.strftime("%Y-%m-%d"), now.strftime("%H%M")
 
-    local_base_folder = os.path.join(os.getcwd(), "Outputs")
+    local_base_folder = "/content/drive/MyDrive/Opal_Outputs" # Modified by Colab notebook
     os.makedirs(local_base_folder, exist_ok=True)
 
     final_dir = os.path.join(local_base_folder, date_f)
