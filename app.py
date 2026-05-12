@@ -255,4 +255,5 @@ with gr.Blocks(title="Opal Smart Engine v3") as demo:
 
 # --- Launch Gradio App ---
 if __name__ == "__main__":
-    demo.launch(debug=True, share=False, theme=gr.themes.Soft())
+    #demo.launch(debug=True, share=False, theme=gr.themes.Soft())
+    demo.launch(debug=True, share=True, theme=gr.themes.Soft())
