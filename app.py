@@ -41,16 +41,11 @@ def get_video_info(url):
             description = (description[:500] + '...') if len(description) > 500 else description
 
             return (
-                f"**Title:** {title}
-"
-                f"**Status:** {status}
-"
-                f"**Uploader:** {uploader}
-"
-                f"**Upload Date:** {upload_date}
-"
-                f"**Duration:** {duration}
-"
+                f"**Title:** {title}"
+                f"**Status:** {status}"
+                f"**Uploader:** {uploader}"
+                f"**Upload Date:** {upload_date}"
+                f"**Duration:** {duration}"
                 f"**Description:** {description}"
             )
     except Exception as e:
