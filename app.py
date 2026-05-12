@@ -100,7 +100,8 @@ def run_segmentation(input_file, seg_len, num_segments, overlap, start_offset, e
 
 
 # --- Gradio Interface ---
-with gr.Blocks(theme=gr.themes.Soft()) as demo:
+#with gr.Blocks(theme=gr.themes.Soft()) as demo:
+with gr.Blocks() as demo:
     gr.Markdown("# YouTube Audio Downloader & Muxer (Opal Edition)")
 
     with gr.TabItem("▶️ Live Downloader"):
