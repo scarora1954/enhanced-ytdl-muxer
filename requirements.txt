@@ -1,0 +1,4 @@
+# requirements.txt
+gradio>=6.0.0
+yt-dlp[default,curl-cffi]
+pytz
