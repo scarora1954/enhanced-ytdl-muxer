@@ -157,7 +157,7 @@ def opal_smart_engine(url, base_folder, filename, live_from_start, time_params, 
 
     yield f"🔍 तारीख: {date_f} | स्थिति: {status}", "प्रारम्भ...", None, None
 
-    cmd = ["yt-dlp", "-f", "ba[ext=m4a]/ba", "--extract-audio", "--audio-format", "m4a", "--audio-quality", "0", "--newline", "--no-check-certificate"]
+    cmd = ["yt-dlp", "-f", "ba[ext=m4a]/ba", "--extract-audio", "--audio-format", "m4a", "--audio-quality", "0", "--newline", "--no-check-certificate","--js-runtimes", "deno"]
 
     if cookies_filepath and os.path.exists(cookies_filepath):
         cmd.extend(["--cookies", cookies_filepath])
