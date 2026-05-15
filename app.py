@@ -33,6 +33,50 @@ def get_duration(input_file):
 
 #     ydl_opts = {'quiet': True, 'no_warnings': True, 'nocheckcertificate': True}
 
+# def get_video_info(url, cookies_filepath=None):
+#     url = clean_youtube_url(url)
+#     if not url:
+#         return "Please enter a YouTube URL to get info."
+
+#     ydl_opts = {
+#         'quiet': True,
+#         'no_warnings': True,
+#         'nocheckcertificate': True,
+#         'js_runtimes': ['deno']
+#     }
+    
+#     if cookies_filepath and os.path.exists(cookies_filepath):
+#         ydl_opts['cookiefile'] = cookies_filepath
+#         ydl_opts['extra_info'] = {'cookiefile': cookies_filepath} # for some cases, yt-dlp might need it here
+#         ydl_opts['geo_bypass'] = True # often needed with cookies for geo-restricted content
+#     try:
+#         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+#             info = ydl.extract_info(url, download=False)
+#             status = "LIVE" if info.get('is_live') else "VOD"
+#             title = info.get('title', 'N/A')
+#             duration = info.get('duration_string', 'N/A')
+#             uploader = info.get('uploader', 'N/A')
+#             upload_date = info.get('upload_date')
+#             if upload_date:
+#                 # Convert YYYYMMDD to DD/MM/YYYY
+#                 upload_date = f"{upload_date[6:8]}/{upload_date[4:6]}/{upload_date[0:4]}"
+
+#             description = info.get('description', 'No description available')
+#             # Limit description length for display
+#             description = (description[:500] + '...') if len(description) > 500 else description
+
+#             return (
+#                 f"**Title:** {title}\n"
+#                 f"**Status:** {status}\n"
+#                 f"**Duration:** {duration}\n"
+#                 f"**Uploader:** {uploader}\n"
+#                 f"**Upload Date:** {upload_date}\n"
+#                 f"**Description:**\n```\n{description}\n```"
+#             )
+#     except yt_dlp.utils.DownloadError as e:
+#         return f"❌ Error retrieving video info: {e}"
+#     except Exception as e:
+#         return f"An unexpected error occurred: {e}"
 def get_video_info(url, cookies_filepath=None):
     url = clean_youtube_url(url)
     if not url:
@@ -42,9 +86,9 @@ def get_video_info(url, cookies_filepath=None):
         'quiet': True,
         'no_warnings': True,
         'nocheckcertificate': True,
-        'js_runtimes': ['deno']
+        'js_runtimes': {'deno': {'path': '/root/.deno/bin/deno'}} # Corrected format for js_runtimes with explicit path
     }
-    
+
     if cookies_filepath and os.path.exists(cookies_filepath):
         ydl_opts['cookiefile'] = cookies_filepath
         ydl_opts['extra_info'] = {'cookiefile': cookies_filepath} # for some cases, yt-dlp might need it here
@@ -60,23 +104,26 @@ def get_video_info(url, cookies_filepath=None):
             if upload_date:
                 # Convert YYYYMMDD to DD/MM/YYYY
                 upload_date = f"{upload_date[6:8]}/{upload_date[4:6]}/{upload_date[0:4]}"
+            else:
+                upload_date = 'N/A'
 
-            description = info.get('description', 'No description available')
-            # Limit description length for display
-            description = (description[:500] + '...') if len(description) > 500 else description
+            thumbnail = info.get('thumbnail', 'N/A')
+            view_count = info.get('view_count', 'N/A')
+            description = info.get('description', 'N/A')
 
-            return (
-                f"**Title:** {title}\n"
-                f"**Status:** {status}\n"
-                f"**Duration:** {duration}\n"
-                f"**Uploader:** {uploader}\n"
-                f"**Upload Date:** {upload_date}\n"
-                f"**Description:**\n```\n{description}\n```"
-            )
-    except yt_dlp.utils.DownloadError as e:
-        return f"❌ Error retrieving video info: {e}"
+            # Clean description for display
+            description = description.replace('\n', ' ').replace('"', '\\"').strip()[:500] + '...'
+
+            return (f"Title: {title}\n"\
+                    f"Status: {status}\n"\
+                    f"Duration: {duration}\n"\
+                    f"Uploader: {uploader}\n"\
+                    f"Upload Date: {upload_date}\n"\
+                    f"Views: {view_count:,}\n"\
+                    f"Description: {description}\n"\
+                    f"Thumbnail: {thumbnail}")
     except Exception as e:
-        return f"An unexpected error occurred: {e}"
+        return f"Error getting video info: {e}"
 
 # --- Stop Function (Graceful Exit) ---
 def stop_task():
@@ -174,8 +221,8 @@ def opal_smart_engine(url, base_folder, filename, live_from_start, time_params, 
 
     yield f"🔍 तारीख: {date_f} | स्थिति: {status}", "प्रारम्भ...", None, None
 
-    cmd = ["yt-dlp", "-f", "ba[ext=m4a]/ba", "--extract-audio", "--audio-format", "m4a", "--audio-quality", "0", "--newline", "--no-check-certificate","--js-runtimes", "deno"]
-
+    #cmd = ["yt-dlp", "-f", "ba[ext=m4a]/ba", "--extract-audio", "--audio-format", "m4a", "--audio-quality", "0", "--newline", "--no-check-certificate","--js-runtimes", "deno"]
+    cmd = ["yt-dlp", "-f", "ba[ext=m4a]/ba", "--extract-audio", "--audio-format", "m4a", "--audio-quality", "0", "--newline", "--no-check-certificate"] + opts
     if cookies_filepath and os.path.exists(cookies_filepath):
         cmd.extend(["--cookies", cookies_filepath])
         cmd.extend(["--impersonate", "chrome:windows-10"])
