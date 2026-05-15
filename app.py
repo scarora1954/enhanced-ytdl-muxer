@@ -222,7 +222,7 @@ def opal_smart_engine(url, base_folder, filename, live_from_start, time_params, 
     yield f"🔍 तारीख: {date_f} | स्थिति: {status}", "प्रारम्भ...", None, None
 
     #cmd = ["yt-dlp", "-f", "ba[ext=m4a]/ba", "--extract-audio", "--audio-format", "m4a", "--audio-quality", "0", "--newline", "--no-check-certificate","--js-runtimes", "deno"]
-    cmd = ["yt-dlp", "-f", "ba[ext=m4a]/ba", "--extract-audio", "--audio-format", "m4a", "--audio-quality", "0", "--newline", "--no-check-certificate"] + opts
+    cmd = ["yt-dlp", "-f", "ba[ext=m4a]/ba", "--extract-audio", "--audio-format", "m4a", "--audio-quality", "0", "--newline", "--no-check-certificate", "--js-runtimes", "deno"] + opts
     if cookies_filepath and os.path.exists(cookies_filepath):
         cmd.extend(["--cookies", cookies_filepath])
         cmd.extend(["--impersonate", "chrome:windows-10"])
@@ -327,6 +327,7 @@ with gr.Blocks(title="Opal Smart Engine v3") as demo:
     stop_btn.click(stop_task, outputs=[dl_status, dl_status])
     mx_btn.click(run_segmentation, [mx_in, mx_sl, mx_sn, mx_ov, mx_ss, mx_to, mx_nm], [mx_st, mx_ot, mx_ot])
     #info_btn.click(get_video_info, [url_in], [url_info_out])
+    #info_btn.click(get_video_info, [url_in, cookies_file_upload], [url_info_out])
     info_btn.click(get_video_info, [url_in, cookies_file_upload], [url_info_out])
 
 # --- Launch Gradio App ---
