@@ -147,6 +147,8 @@ def opal_smart_engine(url, base_folder, filename, live_from_start, time_params, 
     os.makedirs(final_dir, exist_ok=True)
 
     ydl_opts = {'quiet': True, 'no_warnings': True, 'nocheckcertificate': True}
+    if cookies_filepath and os.path.exists(cookies_filepath):
+        ydl_opts['cookiefile'] = cookies_filepath
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         try:
             info = ydl.extract_info(url, download=False)
