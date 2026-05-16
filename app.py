@@ -222,7 +222,7 @@ def opal_smart_engine(url, base_folder, filename, live_from_start, time_params, 
     yield f"🔍 तारीख: {date_f} | स्थिति: {status}", "प्रारम्भ...", None, None
 
     #cmd = ["yt-dlp", "-f", "ba[ext=m4a]/ba", "--extract-audio", "--audio-format", "m4a", "--audio-quality", "0", "--newline", "--no-check-certificate","--js-runtimes", "deno"]
-    cmd = ["yt-dlp", "-f", "ba[ext=m4a]/ba", "--extract-audio", "--audio-format", "m4a", "--audio-quality", "0", "--newline", "--no-check-certificate", "--js-runtimes", "deno"] + opts
+    cmd = ["yt-dlp", "-f", "ba[ext=m4a]/ba", "--extract-audio", "--audio-format", "m4a", "--audio-quality", "0", "--newline", "--no-check-certificate", "--js-runtimes", "deno"] 
     if cookies_filepath and os.path.exists(cookies_filepath):
         cmd.extend(["--cookies", cookies_filepath])
         cmd.extend(["--impersonate", "chrome:windows-10"])
@@ -247,7 +247,9 @@ def opal_smart_engine(url, base_folder, filename, live_from_start, time_params, 
     file_id = f"{filename}_{time_s}"
     out_template = os.path.join(final_dir, f"{file_id}.%(ext)s")
     cmd.extend(["-o", out_template, url])
-
+   
+    # FIX: Added preexec_fn=os.setsid to allow process group signals
+    
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, preexec_fn=os.setsid)
     current_process = process
     for line in process.stdout:
@@ -318,23 +320,19 @@ with gr.Blocks(title="Opal Smart Engine v3") as demo:
         os.makedirs(local_output_base, exist_ok=True)
         yield from opal_smart_engine(u, local_output_base, n, l, p, cookies_fp)
 
-    exec_btn.click(
-        dl_wrap,
+    exec_btn.click(dl_wrap,
         [url_in, name_in, live_lfs, st_s, en_s, sg_s, cookies_file_upload],
         [dl_status, dl_status, dl_out, mx_in]
     )
 
     stop_btn.click(stop_task, outputs=[dl_status, dl_status])
     mx_btn.click(run_segmentation, [mx_in, mx_sl, mx_sn, mx_ov, mx_ss, mx_to, mx_nm], [mx_st, mx_ot, mx_ot])
-    #info_btn.click(get_video_info, [url_in], [url_info_out])
-    #info_btn.click(get_video_info, [url_in, cookies_file_upload], [url_info_out])
     info_btn.click(get_video_info, [url_in, cookies_file_upload], [url_info_out])
 
 # --- Launch Gradio App ---
 if __name__ == "__main__":
     # Define allowed paths for Gradio to handle files outside its default directories
-    allowed_paths = [
-        get_output_dir(),
+    allowed_paths = [get_output_dir(),
         get_segments_dir()
     ]
     demo.launch(debug=True, share=True, theme=gr.themes.Soft(), allowed_paths=allowed_paths)
