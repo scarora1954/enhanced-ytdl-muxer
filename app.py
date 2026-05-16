@@ -112,8 +112,8 @@ def get_video_info(url, cookies_filepath=None):
             description = info.get('description', 'N/A')
 
             # Clean description for display
-            description = description.replace('\n', ' ').replace('"', '\\"').strip()[:500] + '...'
-
+            #description = description.replace('\n', ' ').replace('"', '\\"').strip()[:500] + '...'
+            description = description.replace('\n', ' ').replace('"', '"').strip()[:500] + '...'
             return (f"Title: {title}\n"\
                     f"Status: {status}\n"\
                     f"Duration: {duration}\n"\
@@ -182,6 +182,9 @@ def run_segmentation(input_file, seg_len, seg_num, overlap, start_off, end_off, 
             [
                 "-f", "segment",
                 "-segment_time", str(final_len),
+                # FIX: Added segment_time_delta to implement the 'overlap' variable logic
+                "-segment_time_delta", str(overlap),
+                "-segment_start_number", "1",
                 "-c", "copy",
                 os.path.join(seg_folder, "part_%03d.m4a")
             ]
@@ -210,7 +213,8 @@ def opal_smart_engine(url, base_folder, filename, live_from_start, time_params, 
     final_dir = os.path.join(local_base_folder, date_f)
     os.makedirs(final_dir, exist_ok=True)
 
-    ydl_opts = {'quiet': True, 'no_warnings': True, 'nocheckcertificate': True}
+    ydl_opts = {'quiet': True, 'no_warnings': True, 'nocheckcertificate': True, #added deno runtimes
+               'js_runtimes': {'deno': {'path': '/root/.deno/bin/deno'}}}
     if cookies_filepath and os.path.exists(cookies_filepath):
         ydl_opts['cookiefile'] = cookies_filepath
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
