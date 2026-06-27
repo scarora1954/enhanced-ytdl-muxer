@@ -26,57 +26,7 @@ def get_duration(input_file):
     res = subprocess.run(cmd, capture_output=True, text=True)
     return float(res.stdout.strip()) if res.stdout and res.stdout.strip() else 0
 
-# def get_video_info(url):
-#     url = clean_youtube_url(url)
-#     if not url:
-#         return "Please enter a YouTube URL to get info."
 
-#     ydl_opts = {'quiet': True, 'no_warnings': True, 'nocheckcertificate': True}
-
-# def get_video_info(url, cookies_filepath=None):
-#     url = clean_youtube_url(url)
-#     if not url:
-#         return "Please enter a YouTube URL to get info."
-
-#     ydl_opts = {
-#         'quiet': True,
-#         'no_warnings': True,
-#         'nocheckcertificate': True,
-#         'js_runtimes': ['deno']
-#     }
-    
-#     if cookies_filepath and os.path.exists(cookies_filepath):
-#         ydl_opts['cookiefile'] = cookies_filepath
-#         ydl_opts['extra_info'] = {'cookiefile': cookies_filepath} # for some cases, yt-dlp might need it here
-#         ydl_opts['geo_bypass'] = True # often needed with cookies for geo-restricted content
-#     try:
-#         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-#             info = ydl.extract_info(url, download=False)
-#             status = "LIVE" if info.get('is_live') else "VOD"
-#             title = info.get('title', 'N/A')
-#             duration = info.get('duration_string', 'N/A')
-#             uploader = info.get('uploader', 'N/A')
-#             upload_date = info.get('upload_date')
-#             if upload_date:
-#                 # Convert YYYYMMDD to DD/MM/YYYY
-#                 upload_date = f"{upload_date[6:8]}/{upload_date[4:6]}/{upload_date[0:4]}"
-
-#             description = info.get('description', 'No description available')
-#             # Limit description length for display
-#             description = (description[:500] + '...') if len(description) > 500 else description
-
-#             return (
-#                 f"**Title:** {title}\n"
-#                 f"**Status:** {status}\n"
-#                 f"**Duration:** {duration}\n"
-#                 f"**Uploader:** {uploader}\n"
-#                 f"**Upload Date:** {upload_date}\n"
-#                 f"**Description:**\n```\n{description}\n```"
-#             )
-#     except yt_dlp.utils.DownloadError as e:
-#         return f"❌ Error retrieving video info: {e}"
-#     except Exception as e:
-#         return f"An unexpected error occurred: {e}"
 def get_video_info(url, cookies_filepath=None):
     url = clean_youtube_url(url)
     if not url:
